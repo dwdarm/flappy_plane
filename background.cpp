@@ -1,9 +1,11 @@
 #ifndef BACKGROUND_h_
 #include "background.h"
 
-Background::Background(SDL_Renderer* renderer, const std::string &texturePath) {
-    mTexture.loadFromFile(renderer, texturePath);
-    setTexture(&mTexture);
+#include "libs/texturemap.h"
+
+Background::Background(SDL_Renderer* renderer) {
+    mRenderer = renderer;
+    setTexture(TextureMap::getInstance()->getTexture(mRenderer, "assets/background.png").get());
 }
 
 void Background::tick() {

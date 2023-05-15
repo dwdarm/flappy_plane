@@ -2,11 +2,11 @@
 #define TEXTURE_h_
 
 #ifndef SDL_h_
-    #include <SDL.h>
+    #include <SDL2/SDL.h>
 #endif
 
 #ifndef SDL_IMAGE_H_
-    #include <SDL_image.h>
+    #include <SDL2/SDL_image.h>
 #endif
 
 #include <string>

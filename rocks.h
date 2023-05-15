@@ -1,7 +1,6 @@
 #ifndef ROCKS_h_
 #define ROCKS_h_
 
-#include "libs/texture.h"
 #include "libs/sprite.h"
 
 #include <vector>
@@ -12,7 +11,7 @@ using json = nlohmann::json;
 
 class Rocks {
     public:
-        Rocks(SDL_Renderer* renderer, const std::string &texturePath, const std::string &tilesetPath, int w, int h);
+        Rocks(SDL_Renderer* renderer, const std::string &tilesetPath, int w, int h);
         
         void reset();
         
@@ -25,7 +24,7 @@ class Rocks {
         void setSpeed(int speed);
         
     private:
-        Texture mTexture;
+        SDL_Renderer* mRenderer;
         std::vector<std::shared_ptr<Sprite>> mSprites, mStars;
         json mTileset;
         int mScreenWidth = 0, mScreenHeight = 0;

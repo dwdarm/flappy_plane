@@ -3,6 +3,7 @@
 
 #include "libs/texture.h"
 #include "libs/sprite.h"
+#include "libs/texturemap.h"
 
 enum {
     UP = 0,
@@ -12,7 +13,7 @@ enum {
 
 class Player : public Sprite {
     public:
-        Player(SDL_Renderer* renderer, const std::string &texturePath);
+        Player(SDL_Renderer* renderer);
         
         int getDirection();
         
@@ -24,9 +25,12 @@ class Player : public Sprite {
         void down();
         void gas();
         void release();
+
+        void draw(SDL_Renderer* renderer);
         
     private:
-        Texture mTexture;
+        SDL_Renderer* mRenderer;
+        Sprite mPuff;
         int mDir = STRAIGHT;
         int mSpeed = 2;
 };

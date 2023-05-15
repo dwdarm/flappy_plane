@@ -4,44 +4,23 @@
 #include <string>
 #include <cstdlib>
 
-#define TILE_WIDTH  7
-#define TILE_HEIGHT 10
+#define TTF_PATH "assets/Fonts/kenvector_future.ttf"
+#define FONT_SIZE 32
+#define OUTLINE_SIZE 2
 
-#define MAX_NUM 9999
-#define DIGITS 4
+Score::Score(SDL_Renderer* renderer, int x, int y) {
+    mFont = new Font();
+    mFont->loadFromFile(TTF_PATH);
 
-Score::Score(SDL_Renderer* renderer, const std::string &texturePath, int x, int y, int w, int h) {
-    mTexture.loadFromFile(renderer, texturePath);
-    mX = x;
-    mY = y;
-    mW = w;
-    mH = h;
-    
-    for (int i = 0; i < DIGITS; i++) {
-        std::shared_ptr<Sprite> sprite(new Sprite());
-        sprite->setTexture(&mTexture);
-        sprite->resize(mW, mH);
-        sprite->setTextureRect(TILE_WIDTH, 0, TILE_WIDTH, TILE_HEIGHT);
-        mSprites.push_back(sprite);
-    }
+    mText = new Text(renderer, mFont);
+    mText->setPosition(x, y);
+    mText->setSize(FONT_SIZE);
+    mText->setOutlineSize(OUTLINE_SIZE);
 }
 
-void Score::draw(SDL_Renderer* renderer) {
-    std::string num = std::to_string(mNum > MAX_NUM ? MAX_NUM : mNum);
-   
-    int i = 0;
-    
-    for (std::shared_ptr<Sprite> sprite : mSprites) {
-        sprite->setTextureRect(atoi(std::string((char*)&num[i], 1).c_str()) * TILE_WIDTH, 0 , TILE_WIDTH, TILE_HEIGHT);
-        sprite->setPosition(mX + (i * sprite->getWidth()), mY);
-        sprite->draw(renderer);
-        
-        i++;
-        
-        if (i >= num.length()) {
-            break;
-        }
-    }
+void Score::draw() {
+    mText->setString(std::to_string(mNum));
+    mText->draw();
 }
 
 void Score::display(int num) {

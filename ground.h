@@ -1,7 +1,6 @@
 #ifndef GROUND_h_
 #define GROUND_h_
 
-#include "libs/texture.h"
 #include "libs/sprite.h"
 
 #include <vector>
@@ -12,7 +11,7 @@ using json = nlohmann::json;
 
 class Ground {
     public:
-        Ground(SDL_Renderer* renderer, const std::string &texturePath, const std::string &tilesetPath, int w, int h);
+        Ground(SDL_Renderer* renderer, const std::string &tilesetPath, int w, int h);
         
         void reset();
         
@@ -24,7 +23,7 @@ class Ground {
         void setSpeed(int speed);
         
     private:
-        Texture mTexture;
+        SDL_Renderer* mRenderer;
         std::vector<std::shared_ptr<Sprite>> mSprites;
         json mTileset;
         int mScreenWidth = 0, mScreenHeight = 0;

@@ -1,6 +1,8 @@
 #ifndef ROCKS_h_
 #include "rocks.h"
 
+#include "libs/texturemap.h"
+
 #include <fstream>
 #include <cstdio>
 #include <boost/polygon/polygon.hpp>
@@ -10,6 +12,17 @@
 
 #define STAR_WIDTH  39
 #define STAR_HEIGHT 38
+
+const std::string ROCK_PATH[] = {
+    "assets/rockGrass.png",
+    "assets/rockGrassDown.png",
+};
+
+const std::string STAR_PATH[] = {
+    "assets/starBronze.png",
+    "assets/starSilver.png",
+    "assets/starGold.png"
+};
 
 namespace gtl = boost::polygon;
 using namespace boost::polygon::operators;
@@ -21,7 +34,7 @@ typedef struct {
     bool visible;
 } StarState;
 
-static void _createRocks(std::vector<std::shared_ptr<Sprite>> &sprites, std::vector<std::shared_ptr<Sprite>> &stars, Texture &texture, int w, int h) {
+static void _createRocks(SDL_Renderer *renderer, std::vector<std::shared_ptr<Sprite>> &sprites, std::vector<std::shared_ptr<Sprite>> &stars, int w, int h) {
             
     for (int i = 0; i < 4; i++) {
         int state = rand() % 2;
@@ -29,13 +42,13 @@ static void _createRocks(std::vector<std::shared_ptr<Sprite>> &sprites, std::vec
         std::shared_ptr<Sprite> star(new Sprite());
         int posY = state == 0 ?  h - TILE_HEIGHT : 0;
         
-        sprite->setTexture(&texture);
+        sprite->setTexture(TextureMap::getInstance()->getTexture(renderer, ROCK_PATH[state]).get());
         sprite->resize(TILE_WIDTH, TILE_HEIGHT);
-        sprite->setTextureRect(0, state == 0 ? TILE_HEIGHT : 0 , TILE_WIDTH, TILE_HEIGHT);
+        //sprite->setTextureRect(0, state == 0 ? TILE_HEIGHT : 0 , TILE_WIDTH, TILE_HEIGHT);
         
-        star->setTexture(&texture);
+        star->setTexture(TextureMap::getInstance()->getTexture(renderer, STAR_PATH[2]).get());
         star->resize(STAR_WIDTH, STAR_HEIGHT);
-        star->setTextureRect(0, 2 * TILE_HEIGHT, STAR_WIDTH, STAR_HEIGHT);
+        //star->setTextureRect(0, 2 * TILE_HEIGHT, STAR_WIDTH, STAR_HEIGHT);
         StarState* starState = new StarState();
         starState->visible = rand() % 2 == 1;
         star->data = (void*)(starState);
@@ -56,11 +69,19 @@ static void _createRocks(std::vector<std::shared_ptr<Sprite>> &sprites, std::vec
     }
 }
 
-Rocks::Rocks(SDL_Renderer* renderer, const std::string &texturePath, const std::string &tilesetPath, int w, int h) {
+Rocks::Rocks(SDL_Renderer* renderer, const std::string &tilesetPath, int w, int h) {
+    mRenderer = renderer;
+
     std::ifstream f(tilesetPath);
     mTileset = json::parse(f);
     
-    mTexture.loadFromFile(renderer, texturePath);
+    for(auto i : ROCK_PATH) {
+        TextureMap::getInstance()->getTexture(mRenderer, i);
+    }
+
+    for(auto i : STAR_PATH) {
+        TextureMap::getInstance()->getTexture(mRenderer, i);
+    }
     
     mScreenWidth = w;
     mScreenHeight = h;
@@ -71,7 +92,7 @@ Rocks::Rocks(SDL_Renderer* renderer, const std::string &texturePath, const std::
 void Rocks::reset() {
     mSprites.clear();
     mStars.clear();
-    _createRocks(mSprites, mStars, mTexture, mScreenWidth, mScreenHeight);
+    _createRocks(mRenderer, mSprites, mStars, mScreenWidth, mScreenHeight);
 }
 
 void Rocks::setScreen(int w, int h) {
@@ -89,7 +110,9 @@ void Rocks::tick() {
         
         if ((sp->getX() + sp->getWidth()) < 0) {
             int state = rand() % 2;
-            sp->setTextureRect(0, state == 0 ? TILE_HEIGHT : 0 , TILE_WIDTH, TILE_HEIGHT);
+            //sp->setTextureRect(0, state == 0 ? TILE_HEIGHT : 0 , TILE_WIDTH, TILE_HEIGHT);
+            sp->setTexture(TextureMap::getInstance()->getTexture(mRenderer, ROCK_PATH[state]).get());
+            sp->resize(TILE_WIDTH, TILE_HEIGHT);
             *(int*)sp->data = state; 
             sp->setPosition(mScreenWidth, state == 0 ? mScreenHeight - TILE_HEIGHT : 0);
             

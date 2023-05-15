@@ -1,4 +1,5 @@
-#include <SDL.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 #include <iostream>
 #include <time.h>
 #include <cstdlib>
@@ -64,6 +65,11 @@ int main( int argc, char* args[] )
         printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
         return -1;
     } 
+
+    if(TTF_Init() < 0) {
+        printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
+        return -1;
+    }
     
     window = SDL_CreateWindow("Flappy Plane", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
     if(window == NULL) {
@@ -81,11 +87,11 @@ int main( int argc, char* args[] )
     
     Data data = {
         renderer,
-        Background(renderer, "assets/background.png"),
-        Rocks(renderer, "assets/rock.png", "assets/rock.json", SCREEN_WIDTH, SCREEN_HEIGHT),
-        Ground(renderer, "assets/ground.png", "assets/ground.json", SCREEN_WIDTH, SCREEN_HEIGHT),
-        Player(renderer, "assets/plane.png"),
-        Score(renderer, "assets/num.png", (SCREEN_WIDTH / 2), 24, 21, 30),
+        Background(renderer),
+        Rocks(renderer, "assets/rock.json", SCREEN_WIDTH, SCREEN_HEIGHT),
+        Ground(renderer, "assets/ground.json", SCREEN_WIDTH, SCREEN_HEIGHT),
+        Player(renderer),
+        Score(renderer, (SCREEN_WIDTH / 2), 24),
         0,
         false,
         false
@@ -144,7 +150,7 @@ int main( int argc, char* args[] )
         data.rocks.draw(renderer);
         data.ground.draw(renderer);
         data.pl.draw(renderer);
-        data.score.draw(renderer);
+        data.score.draw();
         SDL_RenderPresent(renderer);
     }
     

@@ -1,23 +1,22 @@
 #ifndef SCORE_h_
 #define SCORE_h_
 
-#include "libs/texture.h"
-#include "libs/sprite.h"
-
+#include <SDL2/SDL.h>
 #include <vector>
 #include <memory>
 
+#include "libs/text.h"
+
 class Score {
     public:
-        Score(SDL_Renderer* renderer, const std::string &texturePath, int x, int y, int w, int h);
+        Score(SDL_Renderer* renderer, int x, int y);
         
         void display(int num);
-        void draw(SDL_Renderer* renderer);
+        void draw();
         
     private:
-        Texture mTexture;
-        std::vector<std::shared_ptr<Sprite>> mSprites;
-        int mX, mY, mW, mH;
+        Font *mFont;
+        Text *mText;
         int mNum = 0;
 };
 

@@ -1,6 +1,8 @@
 #ifndef GROUND_h_
 #include "ground.h"
 
+#include "libs/texturemap.h"
+
 #include <fstream>
 #include <cstdio>
 #include <boost/polygon/polygon.hpp>
@@ -11,11 +13,15 @@ using namespace boost::polygon::operators;
 typedef gtl::polygon_data<float> Polygon;
 typedef gtl::polygon_traits<Polygon>::point_type Point;
 
-Ground::Ground(SDL_Renderer* renderer, const std::string &texturePath, const std::string &tilesetPath, int w, int h) {
+const std::string GROUND_PATH[] = {
+    "assets/groundGrass.png"
+};
+
+Ground::Ground(SDL_Renderer* renderer, const std::string &tilesetPath, int w, int h) {
+    mRenderer = renderer;
+
     std::ifstream f(tilesetPath);
     mTileset = json::parse(f);
-    
-    mTexture.loadFromFile(renderer, texturePath);
     
     mScreenWidth = w;
     mScreenHeight = h;
@@ -28,7 +34,7 @@ void Ground::reset() {
     
     for (int i = 0; i < 2; i++) {
         std::shared_ptr<Sprite> sprite(new Sprite());
-        sprite->setTexture(&mTexture);
+        sprite->setTexture(TextureMap::getInstance()->getTexture(mRenderer, GROUND_PATH[0]).get());
                 
         if (i > 0) {
             sprite->setPosition(sprite->getWidth(), mScreenHeight - sprite->getHeight());

@@ -1,17 +1,16 @@
 #ifndef BACKGROUND_h_
 #define BACKGROUND_h_
 
-#include "libs/texture.h"
 #include "libs/sprite.h"
 
 class Background : public Sprite {
     public:
-        Background(SDL_Renderer* renderer, const std::string &texturePath);
+        Background(SDL_Renderer* renderer);
         
         void tick();
         
     private:
-        Texture mTexture;
+        SDL_Renderer* mRenderer;
 };
 
 #endif
